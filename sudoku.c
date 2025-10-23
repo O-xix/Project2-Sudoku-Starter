@@ -38,11 +38,8 @@ void *check_subgrid(void *params) {
 // has grid[1][1] as the top-left element and grid[9]9] as bottom right
 // A puzzle is complete if it can be completed with no 0s in it
 // If complete, a puzzle is valid if all rows/columns/boxes have numbers from 1
-// to psize For incomplete puzzles, we cannot say anything about validity
 // to psize. For incomplete puzzles, we cannot say anything about validity.
 void checkPuzzle(int psize, int **grid, bool *complete, bool *valid) {
-  // YOUR CODE GOES HERE and in HELPER FUNCTIONS
-  *valid = true;
   // For a 9x9 puzzle, this would be 11 threads (9 subgrids, 1 for rows, 1 for cols)
   // For NxN, it's N subgrids, 1 for rows, 1 for cols = N+2 threads
   int num_threads = psize + 2;

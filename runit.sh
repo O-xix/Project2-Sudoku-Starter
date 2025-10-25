@@ -2,8 +2,14 @@
 
 # Script to compile and run sudoku program
 rm -f sudoku
-gcc -Wall -Wextra sudoku.c -o sudoku
+gcc -Wall -Wextra -pthread -lm -std=c99 sudoku.c -o sudoku
 ./sudoku puzzle9-valid.txt
+echo "________________________________"
+./sudoku puzzle2-invalid.txt
+echo "________________________________"
+./sudoku puzzle2-fill-valid.txt
+echo "________________________________"
+./sudoku puzzle2-valid.txt
 
 # to check for memory leaks, use
 # valgrind ./sudoku puzzle9-good.txt
@@ -16,5 +22,3 @@ gcc -Wall -Wextra sudoku.c -o sudoku
 
 # if using GitHub, you can run the program on GitHub servers and see
 # the result. Repository > Actions > Run Workflow
-
-

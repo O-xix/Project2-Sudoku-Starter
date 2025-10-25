@@ -17,6 +17,12 @@ typedef struct {
   pthread_mutex_t *lock; // Mutex for the shared counter
 } parameters;
 
+// --- Function Prototypes ---
+
+bool is_row_valid(int row, int psize, int **grid);
+bool is_col_valid(int col, int psize, int **grid);
+bool is_subgrid_valid(int start_row, int start_col, int psize, int **grid);
+
 // --- Validation Worker Functions ---
 
 /*

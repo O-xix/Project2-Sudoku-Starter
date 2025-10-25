@@ -30,7 +30,11 @@ bool is_subgrid_valid(int start_row, int start_col, int psize, int **grid);
  * for pthreads. They are used to validate a completed Sudoku puzzle.
  */
 
-// Worker function to validate all columns
+/**
+ * @brief Worker function to validate all columns of a completed Sudoku puzzle.
+ * @param params A void pointer to a parameters struct.
+ * @return NULL. The result is written to the shared result_arr.
+ */
 void *check_cols(void *params) {
   parameters *p = (parameters *)params;
   p->result_arr[p->id] = 1; // Assume valid
@@ -44,7 +48,11 @@ void *check_cols(void *params) {
   return NULL;
 }
 
-// Worker function to validate all rows
+/**
+ * @brief Worker function to validate all rows of a completed Sudoku puzzle.
+ * @param params A void pointer to a parameters struct.
+ * @return NULL. The result is written to the shared result_arr.
+ */
 void *check_rows(void *params) {
   parameters *p = (parameters *)params;
   p->result_arr[p->id] = 1; // Assume valid
@@ -58,7 +66,13 @@ void *check_rows(void *params) {
   return NULL;
 }
 
-// Worker function to validate a subgrid
+/**
+ * @brief Worker function to validate a single subgrid of a completed Sudoku puzzle.
+ * @details The specific subgrid is determined by the thread's ID within the
+ * parameters struct.
+ * @param params A void pointer to a parameters struct.
+ * @return NULL. The result is written to the shared result_arr.
+ */
 void *check_subgrid(void *params) {
   parameters *p = (parameters *)params;
   int subgrid_size = sqrt(p->psize);
@@ -86,7 +100,16 @@ void *check_subgrid(void *params) {
  * They return 1 if they fill a zero, and 0 otherwise.
  */
 
-int solve_row(int row, int psize, int **grid) {
+/**
+ * @brief Attempts to solve a single missing number (0) in a given row.
+ * @details This function checks if there is exactly one zero in the row. If so,
+ * it calculates the missing number and fills it in the grid.
+ * @param row The row index (1-based) to check.
+ * @param psize The size of the puzzle (e.g., 9 for a 9x9 grid).
+ * @param grid The 2D array representing the Sudoku puzzle.
+ * @return 1 if a zero was filled, 0 otherwise.
+ */
+int solve_row(int row, int psize, int **grid) { // NOLINT
   bool seen[psize + 1];
   int zero_count = 0;
   int zero_col = -1;
@@ -115,7 +138,16 @@ int solve_row(int row, int psize, int **grid) {
   return 0;
 }
 
-int solve_col(int col, int psize, int **grid) {
+/**
+ * @brief Attempts to solve a single missing number (0) in a given column.
+ * @details This function checks if there is exactly one zero in the column. If
+ * so, it calculates the missing number and fills it in the grid.
+ * @param col The column index (1-based) to check.
+ * @param psize The size of the puzzle.
+ * @param grid The 2D array representing the Sudoku puzzle.
+ * @return 1 if a zero was filled, 0 otherwise.
+ */
+int solve_col(int col, int psize, int **grid) { // NOLINT
   bool seen[psize + 1];
   int zero_count = 0;
   int zero_row = -1;
@@ -144,7 +176,17 @@ int solve_col(int col, int psize, int **grid) {
   return 0;
 }
 
-int solve_subgrid(int start_row, int start_col, int psize, int **grid) {
+/**
+ * @brief Attempts to solve a single missing number (0) in a given subgrid.
+ * @details This function checks if there is exactly one zero in the subgrid. If
+ * so, it calculates the missing number and fills it in the grid.
+ * @param start_row The starting row index (1-based) of the subgrid.
+ * @param start_col The starting column index (1-based) of the subgrid.
+ * @param psize The size of the puzzle.
+ * @param grid The 2D array representing the Sudoku puzzle.
+ * @return 1 if a zero was filled, 0 otherwise.
+ */
+int solve_subgrid(int start_row, int start_col, int psize, int **grid) { // NOLINT
   int subgrid_size = sqrt(psize);
   bool seen[psize + 1];
   int zero_count = 0;
@@ -185,7 +227,15 @@ int solve_subgrid(int start_row, int start_col, int psize, int **grid) {
  * They are used by the validation worker threads.
  */
 
-// Checks if a given row is valid
+/**
+ * @brief Checks if a given row is valid in a completed Sudoku puzzle.
+ * @details A row is valid if it contains all numbers from 1 to psize exactly
+ * once.
+ * @param row The row index (1-based) to check.
+ * @param psize The size of the puzzle.
+ * @param grid The 2D array representing the Sudoku puzzle.
+ * @return true if the row is valid, false otherwise.
+ */
 bool is_row_valid(int row, int psize, int **grid) {
   bool seen[psize + 1];
   for (int i = 0; i <= psize; i++) {
@@ -202,7 +252,15 @@ bool is_row_valid(int row, int psize, int **grid) {
   return true;
 }
 
-// Checks if a given column is valid
+/**
+ * @brief Checks if a given column is valid in a completed Sudoku puzzle.
+ * @details A column is valid if it contains all numbers from 1 to psize
+ * exactly once.
+ * @param col The column index (1-based) to check.
+ * @param psize The size of the puzzle.
+ * @param grid The 2D array representing the Sudoku puzzle.
+ * @return true if the column is valid, false otherwise.
+ */
 bool is_col_valid(int col, int psize, int **grid) {
   bool seen[psize + 1];
   for (int i = 0; i <= psize; i++) {
@@ -219,7 +277,16 @@ bool is_col_valid(int col, int psize, int **grid) {
   return true;
 }
 
-// Checks if a given subgrid is valid
+/**
+ * @brief Checks if a given subgrid is valid in a completed Sudoku puzzle.
+ * @details A subgrid is valid if it contains all numbers from 1 to psize
+ * exactly once.
+ * @param start_row The starting row index (1-based) of the subgrid.
+ * @param start_col The starting column index (1-based) of the subgrid.
+ * @param psize The size of the puzzle.
+ * @param grid The 2D array representing the Sudoku puzzle.
+ * @return true if the subgrid is valid, false otherwise.
+ */
 bool is_subgrid_valid(int start_row, int start_col, int psize, int **grid) {
   int subgrid_size = sqrt(psize);
   bool seen[psize + 1];
@@ -237,6 +304,12 @@ bool is_subgrid_valid(int start_row, int start_col, int psize, int **grid) {
 
 // --- Solver Thread Entry Points ---
 
+/**
+ * @brief Worker function that attempts to solve all rows in a puzzle.
+ * @details Iterates through each row, calling solve_row. Uses a mutex to safely
+ * update a shared counter if any zeros are filled.
+ * @param params A void pointer to a parameters struct.
+ */
 void *solve_rows_worker(void *params) {
   parameters *p = (parameters *)params;
   int filled_this_thread = 0;
@@ -252,6 +325,12 @@ void *solve_rows_worker(void *params) {
   return NULL;
 }
 
+/**
+ * @brief Worker function that attempts to solve all columns in a puzzle.
+ * @details Iterates through each column, calling solve_col. Uses a mutex to
+ * safely update a shared counter if any zeros are filled.
+ * @param params A void pointer to a parameters struct.
+ */
 void *solve_cols_worker(void *params) {
   parameters *p = (parameters *)params;
   int filled_this_thread = 0;
@@ -267,6 +346,13 @@ void *solve_cols_worker(void *params) {
   return NULL;
 }
 
+/**
+ * @brief Worker function that attempts to solve a single subgrid in a puzzle.
+ * @details Determines its assigned subgrid from its thread ID and calls
+ * solve_subgrid. Uses a mutex to safely update a shared counter if a zero is
+ * filled.
+ * @param params A void pointer to a parameters struct.
+ */
 void *solve_subgrid_worker(void *params) {
   parameters *p = (parameters *)params;
   int subgrid_size = sqrt(p->psize);
@@ -283,13 +369,20 @@ void *solve_subgrid_worker(void *params) {
   return NULL;
 }
 
-// takes puzzle size and grid[][] representing sudoku puzzle
-// and tow booleans to be assigned: complete and valid.
-// row-0 and column-0 is ignored for convenience, so a 9x9 puzzle
-// has grid[1][1] as the top-left element and grid[9]9] as bottom right
-// A puzzle is complete if it can be completed with no 0s in it
-// If complete, a puzzle is valid if all rows/columns/boxes have numbers from 1
-// to psize. For incomplete puzzles, validity is only checked after solving.
+/**
+ * @brief Main logic function to solve and/or validate a Sudoku puzzle.
+ * @details This function first checks if the puzzle is complete. If not, it
+ * enters an iterative solving phase, repeatedly launching solver threads until
+ * no more 'easy' cells can be filled. After attempting to solve, it launches
+ * validation threads to check if the final grid is a complete and valid Sudoku
+ * solution.
+ * @param psize The size of the puzzle (e.g., 9 for a 9x9 grid).
+ * @param grid The 2D array representing the Sudoku puzzle.
+ * @param complete A pointer to a boolean that will be set to true if the puzzle
+ * is complete, false otherwise.
+ * @param valid A pointer to a boolean that will be set to true if the puzzle is
+ * valid, false otherwise.
+ */
 void checkPuzzle(int psize, int **grid, bool *complete, bool *valid) {
   // For a 9x9 puzzle, this would be 11 threads (9 subgrids, 1 for rows, 1 for cols)
   // For NxN, it's N subgrids, 1 for rows, 1 for cols = N+2 threads
@@ -389,8 +482,14 @@ void checkPuzzle(int psize, int **grid, bool *complete, bool *valid) {
   }
 }
 
-// returns size of Sudoku puzzle and fills grid
-int readSudokuPuzzle(char *filename, int ***grid) {
+/**
+ * @brief Reads a Sudoku puzzle from a file.
+ * @param filename The path to the puzzle file.
+ * @param grid A pointer to a 2D int array that will be allocated and filled
+ * with the puzzle data.
+ * @return The size of the puzzle.
+ */
+int readSudokuPuzzle(char *filename, int ***grid) { // NOLINT
   FILE *fp = fopen(filename, "r");
   if (fp == NULL) {
     printf("Could not open file %s\n", filename);
@@ -410,9 +509,12 @@ int readSudokuPuzzle(char *filename, int ***grid) {
   return psize;
 }
 
-// takes puzzle size and grid[][]
-// prints the puzzle
-void printSudokuPuzzle(int psize, int **grid) {
+/**
+ * @brief Prints the Sudoku puzzle to the console.
+ * @param psize The size of the puzzle.
+ * @param grid The 2D array representing the puzzle.
+ */
+void printSudokuPuzzle(int psize, int **grid) { // NOLINT
   printf("%d\n", psize);
   for (int row = 1; row <= psize; row++) {
     for (int col = 1; col <= psize; col++) {
@@ -423,9 +525,12 @@ void printSudokuPuzzle(int psize, int **grid) {
   printf("\n");
 }
 
-// takes puzzle size and grid[][]
-// frees the memory allocated
-void deleteSudokuPuzzle(int psize, int **grid) {
+/**
+ * @brief Frees the memory allocated for the Sudoku grid.
+ * @param psize The size of the puzzle.
+ * @param grid The 2D array to be freed.
+ */
+void deleteSudokuPuzzle(int psize, int **grid) { // NOLINT
   for (int row = 1; row <= psize; row++) {
     free(grid[row]);
   }
@@ -433,7 +538,12 @@ void deleteSudokuPuzzle(int psize, int **grid) {
 }
 
 // expects file name of the puzzle as argument in command line
-int main(int argc, char **argv) {
+/**
+ * @brief Main entry point of the program.
+ * @param argc The number of command-line arguments.
+ * @param argv An array of command-line arguments. Expects one argument: the puzzle filename.
+ */
+int main(int argc, char **argv) { // NOLINT
   if (argc != 2) {
     printf("usage: ./sudoku puzzle.txt\n");
     return EXIT_FAILURE;

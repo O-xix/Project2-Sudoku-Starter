@@ -17,7 +17,6 @@ typedef struct {
   pthread_mutex_t *lock; // Mutex for the shared counter
 } parameters;
 
-// --- Function Prototypes ---
 
 bool is_row_valid(int row, int psize, int **grid);
 bool is_col_valid(int col, int psize, int **grid);
@@ -389,7 +388,7 @@ void checkPuzzle(int psize, int **grid, bool *complete, bool *valid) {
   int num_threads = psize + 2;
   pthread_t threads[num_threads];
 
-  // TODO: Implement the puzzle solver loop here.
+  // If finds 0, sets *complete to false
   *complete = true;
   for (int i = 1; i <= psize; i++) {
     for (int j = 1; j <= psize; j++) {
@@ -431,7 +430,7 @@ void checkPuzzle(int psize, int **grid, bool *complete, bool *valid) {
       for (int i = 0; i < num_threads; i++) {
         pthread_join(threads[i], NULL);
       }
-    } while (zeros_filled_in_pass > 0); // Repeat if we made progress
+    } while (zeros_filled_in_pass > 0); // Repeat if made progress
 
     pthread_mutex_destroy(&lock);
 
@@ -530,7 +529,7 @@ void printSudokuPuzzle(int psize, int **grid) { // NOLINT
  * @param psize The size of the puzzle.
  * @param grid The 2D array to be freed.
  */
-void deleteSudokuPuzzle(int psize, int **grid) { // NOLINT
+void deleteSudokuPuzzle(int psize, int **grid) {
   for (int row = 1; row <= psize; row++) {
     free(grid[row]);
   }
@@ -543,7 +542,7 @@ void deleteSudokuPuzzle(int psize, int **grid) { // NOLINT
  * @param argc The number of command-line arguments.
  * @param argv An array of command-line arguments. Expects one argument: the puzzle filename.
  */
-int main(int argc, char **argv) { // NOLINT
+int main(int argc, char **argv) { 
   if (argc != 2) {
     printf("usage: ./sudoku puzzle.txt\n");
     return EXIT_FAILURE;
